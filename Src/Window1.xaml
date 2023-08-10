@@ -20,14 +20,14 @@
                     <ControlTemplate TargetType="{x:Type ToolTip}">
                         <Grid  Background="Transparent" MinHeight="100" MinWidth="250">
                             <Grid>
-                                <Grid.BitmapEffect>
+                                <!--<Grid.BitmapEffect>
                                     <DropShadowBitmapEffect ShadowDepth="2"/>
-                                </Grid.BitmapEffect>
+                                </Grid.BitmapEffect>-->
                                 <Border  Background="#FF222222" CornerRadius="4,4,4,4" Opacity=".6" Margin="5,5,30,5">
                                 </Border>
                                 <Path Fill="#FF222222" Stretch="Fill" HorizontalAlignment="Right" Opacity=".6" Margin="0,9.188,18.062,0" Width="11.938" Data="M225.5,42 L236.44271,47.192478 225.5,52.5 z" VerticalAlignment="Top" Height="11.5"/>
                             </Grid>
-                            <ContentPresenter TextElement.FontFamily="Cambria"  VerticalAlignment="Top" Margin="10,5,35,5" HorizontalAlignment="Left" TextBlock.Foreground="White" TextBlock.FontSize="12" />
+                            <ContentPresenter TextElement.FontFamily="Verdana"  VerticalAlignment="Top" Margin="10,5,35,5" HorizontalAlignment="Left" TextBlock.Foreground="White" TextBlock.FontSize="12" />
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>

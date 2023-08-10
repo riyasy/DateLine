@@ -10,8 +10,7 @@ namespace DateLine
     internal class WindowHelper
     {
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern IntPtr FindWindowEx(IntPtr hP, IntPtr hC, string sC,
-string sW);
+        public static extern IntPtr FindWindowEx(IntPtr hP, IntPtr hC, string sC, string sW);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]

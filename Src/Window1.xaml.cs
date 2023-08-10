@@ -14,7 +14,9 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using System.ComponentModel;
-
+using NLog;
+using System.Threading;
+using System.Diagnostics;
 
 namespace DateLine
 {
@@ -28,17 +30,29 @@ namespace DateLine
         private BackgroundWorker mBgWorker = null;
 
         List<Label> entries = new List<Label>();
-
-
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         Style labelStyle;
+
         public Window1()
         {
+            InitializeComponent();
+
+            _logger.Debug("Checking to see if there is an instance running.");
+            string procName = Process.GetCurrentProcess().ProcessName;
+            Process[] processes = Process.GetProcessesByName(procName);
+
+            if (processes.Length > 1)
+            {
+                _logger.Warn("Instance is already running, exiting.");
+                System.Windows.MessageBox.Show("Program is already running", "Date Line", MessageBoxButton.OK, MessageBoxImage.Information);
+                this.Close();
+                return;
+            }
+
+
             mBgWorker = new BackgroundWorker();
             mBgWorker.DoWork += mBgWorker_DoWork;
             mBgWorker.RunWorkerCompleted += mBgWorker_RunWorkerCompleted;
-
-            InitializeComponent();
-
             mBgWorker.RunWorkerAsync();
 
             labelStyle = this.Resources["LabelStyle1"] as Style;
@@ -57,11 +71,21 @@ namespace DateLine
             TrayNotify.Text = "Date Line";
             TrayNotify.Visible = true;
             ctxTrayMenu = new System.Windows.Forms.ContextMenuStrip();
+            System.Windows.Forms.ToolStripMenuItem mnuChangeFolder = new System.Windows.Forms.ToolStripMenuItem();
+            mnuChangeFolder.Text = "Select Outlook Folder";
+            mnuChangeFolder.Click += new EventHandler(mnuSelectOutlookFolder_Click);
             System.Windows.Forms.ToolStripMenuItem mnuExit = new System.Windows.Forms.ToolStripMenuItem();
             mnuExit.Text = "Exit";
             mnuExit.Click += new EventHandler(mnuExit_Click);
+            ctxTrayMenu.Items.Add(mnuChangeFolder);
             ctxTrayMenu.Items.Add(mnuExit);
             TrayNotify.ContextMenuStrip = ctxTrayMenu;
+
+        }
+
+        private void mnuSelectOutlookFolder_Click(object sender, EventArgs e)
+        {
+            OutlookHelper.Instance.ChangeOutlookFolder();
         }
 
         void mnuExit_Click(object sender, EventArgs e)
