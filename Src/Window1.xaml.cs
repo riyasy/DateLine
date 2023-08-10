@@ -17,6 +17,7 @@ using System.ComponentModel;
 using NLog;
 using System.Threading;
 using System.Diagnostics;
+using System.Linq;
 
 namespace DateLine
 {
@@ -81,6 +82,13 @@ namespace DateLine
             ctxTrayMenu.Items.Add(mnuExit);
             TrayNotify.ContextMenuStrip = ctxTrayMenu;
 
+            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+
+        }
+
+        private void Dispatcher_ShutdownStarted(object sender, EventArgs e)
+        {
+            OutlookHelper.Instance.CleanUp();
         }
 
         private void mnuSelectOutlookFolder_Click(object sender, EventArgs e)
@@ -98,14 +106,21 @@ namespace DateLine
         {
             if (bOutLookIntegrationSucceeded)
             {
-                foreach (Label lbl in entries)
+                var dates = entries.Select(x => (DateTime)x.Tag);
+                var appointments = OutlookHelper.Instance.GetTaskStrings(dates);
+
+                for (int i = 0; i < entries.Count; i++)
                 {
-                    string kk = OutlookHelper.Instance.GetTaskString((DateTime)lbl.Tag);
-                    if (kk != "")
+                    Label lbl = entries[i];
+                    if (appointments.ContainsKey((DateTime)lbl.Tag))
                     {
-                        string toolTipText = "\n" + ((DateTime)lbl.Tag).ToLongDateString() + "\n\n" + kk;
-                        lbl.ToolTip = toolTipText;
-                        lbl.Content = "." + lbl.Content;
+                        string appointment = appointments[(DateTime)lbl.Tag];
+                        if (appointment != "")
+                        {
+                            string toolTipText = "\n" + ((DateTime)lbl.Tag).ToLongDateString() + "\n\n" + appointment;
+                            lbl.ToolTip = toolTipText;
+                            lbl.Content = "." + lbl.Content;
+                        }
                     }
                 }
             }
@@ -115,8 +130,7 @@ namespace DateLine
         {
             try
             {
-                OutlookHelper.Instance.Initialize();
-                bOutLookIntegrationSucceeded = true;
+                bOutLookIntegrationSucceeded = OutlookHelper.Instance.Initialize();
             }
             catch (Exception err)
             {
@@ -167,9 +181,6 @@ namespace DateLine
             WindowHelper.SetAsDesktopChild(this);
         }
 
-        private void Window_Unloaded(object sender, RoutedEventArgs e)
-        {
-            OutlookHelper.Instance.CleanUp();
-        }
+
     }
 }

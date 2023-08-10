@@ -29,31 +29,9 @@ namespace DateLine
 
         }
 
-        public string GetTaskString(DateTime date)
+        public bool Initialize()
         {
-            string task = "";
-
-            foreach (Outlook.AppointmentItem oAppt in oCalendar.Items)
-            {
-                if (oAppt.Start.Date == date.Date)
-                {
-                    task += oAppt.Start.ToString("HH:mm") + "  ";
-                    task += oAppt.Subject + "\n";
-                    // Show some common properties.
-                    //Console.WriteLine("Subject: " + oAppt.Subject);
-                    //Console.WriteLine("Organizer: " + oAppt.Organizer);
-                    //Console.WriteLine("Start: " + oAppt.Start.ToString());
-                    //Console.WriteLine("End: " + oAppt.End.ToString());
-                    //Console.WriteLine("Location: " + oAppt.Location);
-                    //Console.WriteLine("Recurring: " + oAppt.IsRecurring);
-                }
-            }
-
-            return task;
-        }
-
-        public void Initialize()
-        {
+            bool bResult = false;
             try
             {
                 // Create the Outlook application.
@@ -73,26 +51,33 @@ namespace DateLine
 
                 // Get the Calendar folder.
                 oCalendar = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderCalendar);
+                bResult = true;
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, "Error initializing Outlook Helper.");
-                System.Windows.MessageBox.Show("Error during initialization" + ex, "Date Line", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
+                System.Windows.MessageBox.Show("Error during initialization" + ex, "Date Line", MessageBoxButton.OK, MessageBoxImage.Error);
+                CleanUp();
             }
+            return bResult;
         }
 
-        internal void ChangeOutlookFolder()
+        public void ChangeOutlookFolder()
         {
-            var oFolder = oNS?.PickFolder();
-            if (oFolder != null)
+            try
             {
-                UpdateCustomFolder(oFolder);
+                var oFolder = oNS?.PickFolder();
+                if (oFolder != null)
+                {
+                    //UpdateCustomFolder(oFolder);
+                }
             }
-        }
-
-        private void UpdateCustomFolder(Outlook.MAPIFolder oFolder)
-        {
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error changing Outlook folder.");
+                System.Windows.MessageBox.Show("Error changing Outlook folder." + ex, "Date Line", MessageBoxButton.OK, MessageBoxImage.Error);
+                CleanUp();
+            }
 
         }
 
@@ -104,6 +89,36 @@ namespace DateLine
             oApp = null;
         }
 
+        public Dictionary<DateTime, string> GetTaskStrings(IEnumerable<DateTime> dates)
+        {
+            _logger.Info("Get Task Strings started");
+            Dictionary<DateTime, string> result = new Dictionary<DateTime, string>();
+            string task = "";
 
+            foreach (Outlook.AppointmentItem oAppt in oCalendar.Items)
+            {
+                foreach (var date in dates)
+                {
+                    if (oAppt.Start.Date == date.Date)
+                    {
+                        if (!result.ContainsKey(date))
+                        {
+                            result[date] = "";
+                        }
+                        result[date] += oAppt.Start.ToString("HH:mm") + "  ";
+                        result[date] += oAppt.Subject + "\n";
+                        // Show some common properties.
+                        //Console.WriteLine("Subject: " + oAppt.Subject);
+                        //Console.WriteLine("Organizer: " + oAppt.Organizer);
+                        //Console.WriteLine("Start: " + oAppt.Start.ToString());
+                        //Console.WriteLine("End: " + oAppt.End.ToString());
+                        //Console.WriteLine("Location: " + oAppt.Location);
+                        //Console.WriteLine("Recurring: " + oAppt.IsRecurring);
+                    }
+                }
+            }
+            _logger.Info("Get Task Strings ended");
+            return result;
+        }
     }
 }
