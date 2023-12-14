@@ -24,6 +24,8 @@ public partial class MainWindow
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
     private readonly Style _labelStyle;
 
+    private const int DAY_WINDOW_SIZE = 15;
+
     public MainWindow()
     {
         InitializeComponent();
@@ -98,7 +100,9 @@ public partial class MainWindow
     {
         if (!_bOutLookIntegrationSucceeded) return;
         var dates = _entries.Select(x => (DateTime)x.Tag);
-        var appointments = OutlookHelper.Instance.GetTaskStrings(dates);
+        var fromDate = DateTime.Today.Subtract(new TimeSpan(DAY_WINDOW_SIZE, 0, 0, 0));
+        var toDate = DateTime.Today.Add(new TimeSpan(DAY_WINDOW_SIZE, 0, 0, 0));
+        var appointments = OutlookHelper.Instance.GetTaskStrings(fromDate, toDate);
 
         foreach (var lbl in _entries)
         {
@@ -125,8 +129,7 @@ public partial class MainWindow
 
     private void AddLabels()
     {
-        var yPos = 0;
-        for (var i = -15; i < 15; i++)
+        for (var i = -DAY_WINDOW_SIZE; i < DAY_WINDOW_SIZE; i++)
         {
             var labelDate = new Label
             {
@@ -150,7 +153,6 @@ public partial class MainWindow
             //labelDate.BorderBrush = System.Windows.Media.Brushes.LightGray;
             //labelDate.BorderThickness = new Thickness(1.0);
             StackPanel.Children.Add(labelDate);
-            yPos += 25;
 
             labelDate.Tag = currDate.Date;
             _entries.Add(labelDate);
