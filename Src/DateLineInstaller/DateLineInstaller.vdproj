@@ -50,6 +50,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
         "Release"
@@ -74,6 +82,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
     }
@@ -303,6 +319,20 @@
         }
         "Shortcut"
         {
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_77A3ED57F89C4D33A32DD7F696BC1AD1"
+            {
+            "Name" = "8:DateLine"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_0A27FB0534D24506B87D579E854E177D"
+            "Folder" = "8:_612149A59D0F4163A0DFADBBF5BB47FA"
+            "WorkingFolder" = "8:_D1708DF6DA764FD9AA862E0DE4F4BC68"
+            "Icon" = "8:_D6ED397E56B145A49DB68A6E092A2B35"
+            "Feature" = "8:"
+            }
         }
         "UserInterface"
         {
@@ -704,7 +734,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_0A27FB0534D24506B87D579E854E177D"
             {
-            "SourcePath" = "8:..\\DateLine\\obj\\Debug\\net8.0-windows7.0\\apphost.exe"
+            "SourcePath" = "8:..\\DateLine\\obj\\Release\\net8.0-windows7.0\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_D1708DF6DA764FD9AA862E0DE4F4BC68"
