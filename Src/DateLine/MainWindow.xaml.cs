@@ -7,9 +7,11 @@ using System.Drawing;
 using System.Linq;
 using System.Timers;
 using System.Windows;
+using System.Windows.Forms;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using Label = System.Windows.Controls.Label;
 using MessageBox = System.Windows.MessageBox;
+using Timer = System.Timers.Timer;
 
 namespace DateLine;
 
@@ -67,6 +69,13 @@ public partial class MainWindow
         _trayNotify.Visible = true;
 
         var ctxTrayMenu = new System.Windows.Forms.ContextMenuStrip();
+
+        var mnuAppName = new System.Windows.Forms.ToolStripLabel();
+        mnuAppName.Text = "DateLine (v 1.0.0)";
+
+        var mnuContact = new System.Windows.Forms.ToolStripLabel();
+        mnuContact.Text = "https://github.com/riyasy/DateLine";
+
         var mnuChangeFolder = new System.Windows.Forms.ToolStripMenuItem();
         mnuChangeFolder.Text = "Select Outlook Folder";
         mnuChangeFolder.Click += mnuSelectOutlookFolder_Click;
@@ -74,7 +83,11 @@ public partial class MainWindow
         var mnuExit = new System.Windows.Forms.ToolStripMenuItem();
         mnuExit.Text = "Exit";
         mnuExit.Click += mnuExit_Click;
+
         //ctxTrayMenu.Items.Add(mnuChangeFolder);
+        ctxTrayMenu.Items.Add(mnuAppName);
+        ctxTrayMenu.Items.Add(mnuContact);
+        ctxTrayMenu.Items.Add(new ToolStripSeparator());
         ctxTrayMenu.Items.Add(mnuExit);
         _trayNotify.ContextMenuStrip = ctxTrayMenu;
 
